@@ -24,8 +24,8 @@ func TestParseBook(t *testing.T) {
 	}
 
 	result := ParseBook(content, "活着")
-	if result.Item[0] != bookTestData {
-		t.Errorf(" excepted: %+v\nbut got: %+v", bookTestData, result.Item[0])
+	if result.Items[0] != bookTestData {
+		t.Errorf(" excepted: %+v\nbut got: %+v", bookTestData, result.Items[0])
 	}
 
 }

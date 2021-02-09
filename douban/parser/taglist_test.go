@@ -16,13 +16,13 @@ func TestParseTagList(t *testing.T) {
 	if len(result.Requests) != resultSize {
 		t.Errorf("result should have %d requests; but had %d", resultSize, len(result.Requests))
 	}
-	if len(result.Item) != resultSize {
-		t.Errorf("result should have %d requests; but had %d", resultSize, len(result.Item))
+	if len(result.Items) != resultSize {
+		t.Errorf("result should have %d requests; but had %d", resultSize, len(result.Items))
 	}
 
 	for i, v := range exceptedTags {
-		if result.Item[i].(string) != v {
-			t.Errorf("except item #%d: %s; but was %s", i, v, result.Item[i])
+		if result.Items[i].(string) != v {
+			t.Errorf("except item #%d: %s; but was %s", i, v, result.Items[i])
 		}
 	}
 

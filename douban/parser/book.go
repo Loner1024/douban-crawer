@@ -40,7 +40,7 @@ func ParseBook(contents []byte, name string) engine.ParserResult {
 		AuthorSummary: extractSummary(contents, summaryRe)[1],
 	}
 	return engine.ParserResult{
-		Item: []interface{}{book},
+		Items: []interface{}{book},
 	}
 }
 
@@ -54,5 +54,8 @@ func extractString(contents []byte, re *regexp.Regexp) string {
 
 func extractSummary(contents []byte, re *regexp.Regexp) []string {
 	match := re.FindAllSubmatch(contents, -1)
-	return []string{string(match[0][1]), string(match[1][1])}
+	if len(match) > 1 {
+		return []string{string(match[0][1]), string(match[1][1])}
+	}
+	return []string{string(match[0][1]), string(match[0][1])}
 }

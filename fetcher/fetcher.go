@@ -2,6 +2,7 @@ package fetcher
 
 import (
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -14,6 +15,7 @@ func Fetch(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Printf("Fetching %v\n", url)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err

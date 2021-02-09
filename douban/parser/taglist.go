@@ -17,7 +17,7 @@ func ParseTagList(contents []byte) engine.ParserResult {
 			Url:        global.DoubanBookBaseUrl + string(v[1]),
 			ParserFunc: ParseTag,
 		})
-		result.Item = append(result.Item, string(v[2]))
+		result.Items = append(result.Items, string(v[2]))
 	}
 	return result
 }

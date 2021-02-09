@@ -20,7 +20,7 @@ func ParseTag(contents []byte) engine.ParserResult {
 				return ParseBook(c, name)
 			},
 		})
-		result.Item = append(result.Item, strings.Replace(strings.Replace(name, "\n", "", -1), " ", "", -1))
+		result.Items = append(result.Items, strings.Replace(strings.Replace(name, "\n", "", -1), " ", "", -1))
 	}
 	return result
 }
