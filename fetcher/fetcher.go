@@ -4,13 +4,17 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
+var rateLimiter = time.Tick(10 * time.Millisecond)
+
 func Fetch(url string) ([]byte, error) {
+	<-rateLimiter
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	req.Header = map[string][]string{
-		"User-Agent": []string{"Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36"},
+		"User-Agent": {"Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36"},
 	}
 	if err != nil {
 		return nil, err
