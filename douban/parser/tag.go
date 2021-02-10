@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-const tagRe string = `<a href="(https://book.douban.com/subject/[0-9]+/)"[^>]*>([^<]*)</a>`
+var tagRe = regexp.MustCompile(`<a href="(https://book.douban.com/subject/[0-9]+/)"[^>]*>([^<]*)</a>`)
 
 func ParseTag(contents []byte) engine.ParserResult {
-	re := regexp.MustCompile(tagRe)
+	re := tagRe
 	match := re.FindAllSubmatch(contents, -1)
 	result := engine.ParserResult{}
 	for _, v := range match {

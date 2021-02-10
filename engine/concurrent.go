@@ -1,6 +1,9 @@
 package engine
 
-import "log"
+import (
+	"douban-book-crawler/model"
+	"log"
+)
 
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
@@ -28,17 +31,28 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 
 	for _, r := range seeds {
+		if isDuplicate(r.Url) {
+			log.Printf("Duplicate request: %s", r.Url)
+			continue
+		}
 		e.Scheduler.Submit(r) // 把传入的 request 提交给scheduler
 	}
 
-	itemCount := 0
+	bookCount := 0
 	for {
 		result := <-out
 		for _, item := range result.Items {
-			itemCount++
-			log.Printf("Got item #%d %v\n", itemCount, item)
+			if _, ok := item.(model.Book); ok {
+				log.Printf("Got item #%d %v\n", bookCount, item)
+				bookCount++
+			}
 		}
+
 		for _, req := range result.Requests {
+			if isDuplicate(req.Url) {
+				log.Printf("Duplicate request: %s", req.Url)
+				continue
+			}
 			e.Scheduler.Submit(req)
 		}
 	}
@@ -56,4 +70,14 @@ func createWorker(in chan Request, out chan ParserResult, ready ReadyNotifier) {
 			out <- result
 		}
 	}()
+}
+
+var visitedUrls = make(map[string]bool)
+
+func isDuplicate(url string) bool {
+	if visitedUrls[url] {
+		return true
+	}
+	visitedUrls[url] = true
+	return false
 }
