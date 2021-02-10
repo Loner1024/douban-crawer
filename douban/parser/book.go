@@ -55,7 +55,9 @@ func extractString(contents []byte, re *regexp.Regexp) string {
 func extractSummary(contents []byte, re *regexp.Regexp) []string {
 	match := re.FindAllSubmatch(contents, -1)
 	if len(match) > 1 {
-		return []string{string(match[0][1]), string(match[1][1])}
+		if len(match[0]) > 1 && len(match[1]) > 1 {
+			return []string{string(match[0][1]), string(match[1][1])}
+		}
 	}
-	return []string{string(match[0][1]), string(match[0][1])}
+	return []string{"", ""}
 }

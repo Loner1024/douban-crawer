@@ -1,13 +1,13 @@
 package engine
 
 import (
-	"douban-book-crawler/model"
 	"log"
 )
 
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
+	ItemChan    chan interface{}
 }
 
 type Scheduler interface {
@@ -38,14 +38,10 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		e.Scheduler.Submit(r) // 把传入的 request 提交给scheduler
 	}
 
-	bookCount := 0
 	for {
 		result := <-out
 		for _, item := range result.Items {
-			if _, ok := item.(model.Book); ok {
-				log.Printf("Got item #%d %v\n", bookCount, item)
-				bookCount++
-			}
+			go func(item interface{}) { e.ItemChan <- item }(item)
 		}
 
 		for _, req := range result.Requests {
