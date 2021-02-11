@@ -8,10 +8,10 @@ import (
 	"time"
 )
 
-// var rateLimiter = time.Tick(10 * time.Millisecond)
+// var rateLimiter = time.NewTicker(5 * time.Second)
 
 func Fetch(url string) ([]byte, error) {
-	// <-rateLimiter
+	time.NewTicker(5 * time.Second)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	req.Header = map[string][]string{

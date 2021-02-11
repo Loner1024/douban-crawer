@@ -8,16 +8,16 @@ import (
 
 const tagListRe string = `<a href="(/tag/[^>]*)">([^<]*)</a>`
 
-func ParseTagList(contents []byte) engine.ParserResult {
+func ParseTagList(contents []byte) engine.ParseResult {
 	re := regexp.MustCompile(tagListRe)
 	match := re.FindAllSubmatch(contents, -1)
-	result := engine.ParserResult{}
+	result := engine.ParseResult{}
 	for _, v := range match {
 		result.Requests = append(result.Requests, engine.Request{
 			Url:        global.DoubanBookBaseUrl + string(v[1]),
 			ParserFunc: ParseTag,
 		})
-		result.Items = append(result.Items, string(v[2]))
+		// result.Requests = append(result.Items, string(v[2]))
 	}
 	return result
 }

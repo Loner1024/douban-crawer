@@ -9,10 +9,14 @@ import (
 )
 
 func main() {
+	itemChan, err := persist.ItemSaver()
+	if err != nil {
+		panic(err)
+	}
 	concurrentEngine := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
 		WorkerCount: 100,
-		ItemChan:    persist.ItemSaver(),
+		ItemChan:    itemChan,
 	}
 	concurrentEngine.Run(engine.Request{
 		Url:        global.DoubanBookBaseUrl + "/tag",

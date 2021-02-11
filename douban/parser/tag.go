@@ -3,24 +3,23 @@ package parser
 import (
 	"douban-book-crawler/engine"
 	"regexp"
-	"strings"
 )
 
-var tagRe = regexp.MustCompile(`<a href="(https://book.douban.com/subject/[0-9]+/)"[^>]*>([^<]*)</a>`)
+var tagRe = regexp.MustCompile(`<a href="(https://book.douban.com/subject/[0-9]+/)"[^>]*>[\n|\s]*([^<]*)[\n|\s]*</a>`)
 
-func ParseTag(contents []byte) engine.ParserResult {
+func ParseTag(contents []byte) engine.ParseResult {
 	re := tagRe
 	match := re.FindAllSubmatch(contents, -1)
-	result := engine.ParserResult{}
+	result := engine.ParseResult{}
 	for _, v := range match {
 		name := string(v[2])
+		url := string(v[1])
 		result.Requests = append(result.Requests, engine.Request{
-			Url: string(v[1]),
-			ParserFunc: func(c []byte) engine.ParserResult {
-				return ParseBook(c, name)
+			Url: url,
+			ParserFunc: func(c []byte) engine.ParseResult {
+				return ParseBook(c, name, url)
 			},
 		})
-		result.Items = append(result.Items, strings.Replace(strings.Replace(name, "\n", "", -1), " ", "", -1))
 	}
 	return result
 }

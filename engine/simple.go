@@ -1,10 +1,5 @@
 package engine
 
-import (
-	"douban-book-crawler/fetcher"
-	"log"
-)
-
 type SimpleEngine struct{}
 
 func (e SimpleEngine) Run(seeds ...Request) {
@@ -19,13 +14,4 @@ func (e SimpleEngine) Run(seeds ...Request) {
 		}
 		requests = append(requests, parserResult.Requests...)
 	}
-}
-
-func worker(r Request) (ParserResult, error) {
-	body, err := fetcher.Fetch(r.Url)
-	if err != nil {
-		log.Printf("worker error: %v\n", err)
-		return ParserResult{}, err
-	}
-	return r.ParserFunc(body), nil
 }

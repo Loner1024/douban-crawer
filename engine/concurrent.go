@@ -7,7 +7,7 @@ import (
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
-	ItemChan    chan interface{}
+	ItemChan    chan Item
 }
 
 type Scheduler interface {
@@ -23,7 +23,7 @@ type ReadyNotifier interface {
 
 func (e *ConcurrentEngine) Run(seeds ...Request) {
 	// in := make(chan Request)
-	out := make(chan ParserResult)
+	out := make(chan ParseResult)
 	e.Scheduler.Run()
 
 	for i := 0; i < e.WorkerCount; i++ {
@@ -41,7 +41,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	for {
 		result := <-out
 		for _, item := range result.Items {
-			go func(item interface{}) { e.ItemChan <- item }(item)
+			go func(item Item) { e.ItemChan <- item }(item)
 		}
 
 		for _, req := range result.Requests {
@@ -54,7 +54,7 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 }
 
-func createWorker(in chan Request, out chan ParserResult, ready ReadyNotifier) {
+func createWorker(in chan Request, out chan ParseResult, ready ReadyNotifier) {
 	go func() {
 		for {
 			ready.WorkerReady(in)

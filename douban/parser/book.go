@@ -14,11 +14,12 @@ var publishYearRe = regexp.MustCompile(`<span class="pl">出版年:</span>[\s]([
 var pageRe = regexp.MustCompile(`<span class="pl">页数:</span>[\s]([^<]*)<br/>`)
 var priceRe = regexp.MustCompile(`<span class="pl">定价:</span>[\s]([^<]*)元<br/>`)
 var isbnRe = regexp.MustCompile(`<span class="pl">ISBN:</span>[\s]([^<]*)<br/>`)
-var summaryRe = regexp.MustCompile(`<div class="intro">[\n\s]+(([\s\S])*?)<\/div>`)
+var summaryRe = regexp.MustCompile(`<div class="intro">[\n\s]+(([\s\S])*?)</div>`)
+var idUrlRe = regexp.MustCompile(`https://book.douban.com/subject/([\d]+)/`)
 
 // var authorSummaryRe = regexp.MustCompile()
 
-func ParseBook(contents []byte, name string) engine.ParserResult {
+func ParseBook(contents []byte, name string, url string) engine.ParseResult {
 	var book = model.Book{
 		Name:        name,
 		Author:      extractString(contents, authorRe),
@@ -39,8 +40,14 @@ func ParseBook(contents []byte, name string) engine.ParserResult {
 		Summary:       extractSummary(contents, summaryRe)[0],
 		AuthorSummary: extractSummary(contents, summaryRe)[1],
 	}
-	return engine.ParserResult{
-		Items: []interface{}{book},
+	return engine.ParseResult{
+		Items: []engine.Item{
+			{
+				Url:     url,
+				Id:      extractString([]byte(url), idUrlRe),
+				Payload: book,
+			},
+		},
 	}
 }
 

@@ -2,36 +2,41 @@ package persist
 
 import (
 	"context"
+	"douban-book-crawler/engine"
 	"log"
 
 	"github.com/olivere/elastic/v7"
 )
 
-func ItemSaver() chan interface{} {
-	out := make(chan interface{})
+func ItemSaver() (chan engine.Item, error) {
+	client, err := elastic.NewClient(elastic.SetSniff(false))
+	if err != nil {
+		return nil, err
+	}
+	out := make(chan engine.Item)
 	go func() {
 		itemCount := 0
 		for {
 			item := <-out
 			log.Printf("Item Saver: got item #%d: %s", itemCount, item)
 			itemCount++
-			_, err := save(item)
+			err := save(client, item)
 			if err != nil {
 				log.Printf("Item Saver: error saving item %v: %v", item, err)
 			}
 		}
 	}()
-	return out
+	return out, nil
 }
 
-func save(item interface{}) (id string, err error) {
-	client, err := elastic.NewClient(elastic.SetSniff(false))
-	if err != nil {
-		return "", err
+func save(client *elastic.Client, item engine.Item) error {
+	indexService := client.Index().Index("douban").BodyJson(item)
+	if item.Id != "" {
+		indexService.Id(item.Id)
 	}
-	resp, err := client.Index().Index("douban").BodyJson(item).Do(context.Background())
+	_, err := indexService.Do(context.Background())
 	if err != nil {
-		return "", err
+		return err
 	}
-	return resp.Id, nil
+	return nil
 }
