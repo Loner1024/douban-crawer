@@ -5,15 +5,25 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"time"
 )
 
 // var rateLimiter = time.NewTicker(5 * time.Second)
 
-func Fetch(url string) ([]byte, error) {
-	time.NewTicker(5 * time.Second)
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
+func Fetch(Url, IP string) ([]byte, error) {
+	proxyUrl, err := url.Parse(IP)
+	if err != nil {
+		return nil, err
+	}
+	transport := &http.Transport{
+		Proxy: http.ProxyURL(proxyUrl),
+	}
+	client := &http.Client{
+		Transport: transport,
+		Timeout:   time.Second * 30,
+	}
+	req, err := http.NewRequest("GET", Url, nil)
 	req.Header = map[string][]string{
 		"User-Agent": {"Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36"},
 		"Cookie":     {generalRandomCookie()},
@@ -21,7 +31,7 @@ func Fetch(url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Fetching %v\n", url)
+	log.Printf("Fetching %v\n", Url)
 	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
