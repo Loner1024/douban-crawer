@@ -1,60 +1,7 @@
 # 豆瓣分布式爬虫
 
-```
-├── crawler
-│   ├── douban
-│   │   └── parser
-│   │       ├── book.go
-│   │       ├── book_test.go
-│   │       ├── book_test_data.html
-│   │       ├── tag.go
-│   │       ├── tag_test.go
-│   │       ├── tag_test_data.html
-│   │       ├── taglist.go
-│   │       ├── taglist_test.go
-│   │       └── taglist_test_data.html
-│   ├── engine
-│   │   ├── concurrent.go
-│   │   ├── simple.go
-│   │   ├── types.go
-│   │   └── worker.go
-│   ├── fetcher
-│   │   └── fetcher.go
-│   ├── global
-│   │   └── global.go
-│   ├── main.go
-│   ├── model
-│   │   └── douban_book.go
-│   ├── persist
-│   │   ├── itemsaver.go
-│   │   └── itemsaver_test.go
-│   ├── scheduler
-│   │   ├── queued.go
-│   │   └── simple.go
-│   └── test
-│       ├── main.go
-│       └── test
-├── crawler_distributed
-│   ├── config
-│   │   └── config.go
-│   ├── main.go
-│   ├── persist
-│   │   ├── client
-│   │   │   └── itemsaver.go
-│   │   ├── rpc.go
-│   │   └── server
-│   │       ├── client_test.go
-│   │       └── main.go
-│   ├── rpcsupport
-│   │   └── rpc.go
-│   └── worker
-│       ├── client
-│       │   └── worker.go
-│       ├── rpc.go
-│       ├── server
-│       │   ├── client_test.go
-│       │   └── main.go
-│       └── types.go
-├── go.mod
-└── go.sum
-```
+使用 Go 语言开发的豆瓣书籍分布式爬虫。以豆瓣图书 tag 页面为入口，抓取豆瓣图书信息。
+
+分布式的各个 worker 之间使用 JSON-RPC 进行通信，抓取后将数据存储进入 ElasticSearch。
+
+![未命名.001](./assets/img/未命名.001.jpeg)
