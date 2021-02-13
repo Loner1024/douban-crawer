@@ -1,16 +1,23 @@
 package main
 
 import (
-	"douban-book-crawler/crawler_distributed/config"
 	"douban-book-crawler/crawler_distributed/persist"
 	"douban-book-crawler/crawler_distributed/rpcsupport"
+	"flag"
 	"fmt"
 
 	"github.com/olivere/elastic/v7"
 )
 
+var port = flag.Int("port", 0, "the port for me to listen on")
+
 func main() {
-	serveRpc(fmt.Sprintf(":%d", config.ItemSaverPort))
+	flag.Parse()
+	if *port == 0 {
+		fmt.Println("must specify a port")
+		return
+	}
+	serveRpc(fmt.Sprintf(":%d", *port))
 }
 
 func serveRpc(host string) error {
