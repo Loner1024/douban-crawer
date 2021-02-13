@@ -15,10 +15,8 @@ func ParseTag(contents []byte) engine.ParseResult {
 		name := string(v[2])
 		url := string(v[1])
 		result.Requests = append(result.Requests, engine.Request{
-			Url: url,
-			ParserFunc: func(c []byte) engine.ParseResult {
-				return ParseBook(c, name, url)
-			},
+			Url:    url,
+			Parser: NewFuncBookParser(name),
 		})
 	}
 	return result

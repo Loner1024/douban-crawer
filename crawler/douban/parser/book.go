@@ -19,7 +19,7 @@ var idUrlRe = regexp.MustCompile(`https://book.douban.com/subject/([\d]+)/`)
 
 // var authorSummaryRe = regexp.MustCompile()
 
-func ParseBook(contents []byte, name string, url string) engine.ParseResult {
+func parseBook(contents []byte, name string, url string) engine.ParseResult {
 	var book = model.Book{
 		Name:        name,
 		Author:      extractString(contents, authorRe),
@@ -67,4 +67,20 @@ func extractSummary(contents []byte, re *regexp.Regexp) []string {
 		}
 	}
 	return []string{"", ""}
+}
+
+type BookParser struct {
+	name string
+}
+
+func (b BookParser) Parse(contents []byte, url string) engine.ParseResult {
+	return parseBook(contents, url, b.name)
+}
+
+func (b BookParser) Serialize() (name string, args interface{}) {
+	return "BookParser", b.name
+}
+
+func NewFuncBookParser(name string) *BookParser {
+	return &BookParser{name: name}
 }

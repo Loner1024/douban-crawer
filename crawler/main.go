@@ -20,13 +20,15 @@ func main() {
 		panic(err)
 	}
 	concurrentEngine := engine.ConcurrentEngine{
-		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 50,
-		ItemChan:    itemChan,
+		Scheduler:        &scheduler.QueuedScheduler{},
+		WorkerCount:      100,
+		ItemChan:         itemChan,
+		RequestProcessor: engine.Worker,
 	}
 	concurrentEngine.Run(engine.Request{
-		Url:        global.DoubanBookBaseUrl + "/tag",
-		ParserFunc: parser.ParseTagList,
+		Url:    global.DoubanBookBaseUrl + "/tag/web",
+		Parser: engine.NewFuncParser(parser.ParseTag, "parser.ParseTag"),
+		// Parser: engine.NewFuncParser(parser.ParseTagList, "parser.ParseTagList"),
 	})
 }
 

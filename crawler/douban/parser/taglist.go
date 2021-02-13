@@ -14,8 +14,8 @@ func ParseTagList(contents []byte) engine.ParseResult {
 	result := engine.ParseResult{}
 	for _, v := range match {
 		result.Requests = append(result.Requests, engine.Request{
-			Url:        global.DoubanBookBaseUrl + string(v[1]),
-			ParserFunc: ParseTag,
+			Url:    global.DoubanBookBaseUrl + string(v[1]),
+			Parser: engine.NewFuncParser(ParseTag, "ParseTag"),
 		})
 		// result.Requests = append(result.Items, string(v[2]))
 	}

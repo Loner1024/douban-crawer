@@ -5,12 +5,11 @@ import (
 	"log"
 )
 
-func worker(r Request) (ParseResult, error) {
-	// body, err := fetcher.Fetch(r.Url, <-global.ProxyIP)
+func Worker(r Request) (ParseResult, error) {
 	body, err := fetcher.Fetch(r.Url, "")
 	if err != nil {
-		log.Printf("worker error: %v\n", err)
+		log.Printf("Worker error: %v\n", err)
 		return ParseResult{}, err
 	}
-	return r.ParserFunc(body), nil
+	return r.Parser.Parse(body, r.Url), nil
 }
