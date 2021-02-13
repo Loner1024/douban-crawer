@@ -1,1 +1,2 @@
-*.go linguist-detectable
+* linguist-vendored
+*.go linguist-vendored=false
