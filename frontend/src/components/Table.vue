@@ -30,16 +30,14 @@
 <script>
 import axios from "axios";
 export default {
-  props:["q"],
   data() {
     return {
       froms: [],
     };
   },
-  async beforeCreate() {
-    const res  = await axios.get("http://localhost:9000/?q=活着")
+  async mounted() {
+    const res  = await axios.get("http://localhost:9000/?q="+this.$route.query.q)
     this.froms = res.data.data.Items
-    console.log(this.froms)
   },
 }
 </script>

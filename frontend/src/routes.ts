@@ -4,7 +4,7 @@ import Home from './views/Home.vue'
 
 
 let routes = [
-    {path:"/search",component:SearchResult},
+    {path:"/search",component:SearchResult,props: (route) => ({ query: route.query.q })},
     {path:"/",component:Home},
 ]
 
