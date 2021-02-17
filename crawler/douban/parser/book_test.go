@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"douban-book-crawler/engine"
-	"douban-book-crawler/model"
+	"douban-book-crawler/crawler/engine"
+	"douban-book-crawler/crawler/model"
 	"io/ioutil"
 	"testing"
 )
